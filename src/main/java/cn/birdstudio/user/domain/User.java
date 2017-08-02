@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cn.birdstudio.domain;
+package cn.birdstudio.user.domain;
 
 import java.io.Serializable;
 

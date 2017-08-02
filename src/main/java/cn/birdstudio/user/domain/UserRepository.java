@@ -1,8 +1,6 @@
-package cn.birdstudio.service;
+package cn.birdstudio.user.domain;
 
 import org.springframework.data.repository.Repository;
-
-import cn.birdstudio.domain.User;
 
 public interface UserRepository extends Repository<User, Long> {
 	User save(User entity);

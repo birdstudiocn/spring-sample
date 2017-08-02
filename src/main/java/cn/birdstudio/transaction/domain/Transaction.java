@@ -1,4 +1,4 @@
-package cn.birdstudio.domain;
+package cn.birdstudio.transaction.domain;
 
 import java.io.Serializable;
 

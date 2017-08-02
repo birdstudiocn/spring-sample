@@ -1,8 +1,9 @@
-package cn.birdstudio.service;
+package cn.birdstudio.user.service;
 
 import org.springframework.stereotype.Component;
 
-import cn.birdstudio.domain.User;
+import cn.birdstudio.user.domain.User;
+import cn.birdstudio.user.domain.UserRepository;
 
 @Component("userService")
 public class UserServiceImpl implements UserService {
@@ -18,7 +19,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getCity(String name) {
+	public User getUser(String name) {
 		return userRepository.findByNameAllIgnoringCase(name);
 	}
 
