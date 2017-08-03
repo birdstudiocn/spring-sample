@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Table(name = "transaction", schema = "transaction")
@@ -15,9 +15,10 @@ public class Transaction implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "transaction_generator", sequenceName = "transaction_sequence", initialValue = 1)
-	@GeneratedValue(generator = "transaction_generator")
-	private Long xid;
+	//@SequenceGenerator(name = "transaction_generator", sequenceName = "transaction_sequence", initialValue = 1)
+	//@GeneratedValue(generator = "transaction_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int xid;
 
 	@Column(nullable = false)
 	private int seller_id;
@@ -28,11 +29,11 @@ public class Transaction implements Serializable {
 	@Column(nullable = false)
 	private int amount;
 
-	public Long getXid() {
+	public int getXid() {
 		return xid;
 	}
 
-	public void setXid(Long xid) {
+	public void setXid(int xid) {
 		this.xid = xid;
 	}
 

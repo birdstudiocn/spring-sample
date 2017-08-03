@@ -21,8 +21,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Table(name = "user", schema = "user")
@@ -32,9 +32,10 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "user_generator", sequenceName = "user_sequence", initialValue = 1)
-	@GeneratedValue(generator = "user_generator")
-	private Long id;
+	//@SequenceGenerator(name = "user_generator", sequenceName = "user_sequence", initialValue = 1)
+	//@GeneratedValue(generator = "user_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
 	@Column(nullable = false)
 	private String name;
@@ -45,14 +46,16 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private int amt_bought;
 
-	public User() {
+	public User(int id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

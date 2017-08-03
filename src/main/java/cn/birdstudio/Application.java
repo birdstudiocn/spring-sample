@@ -26,25 +26,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import cn.birdstudio.transaction.domain.Transaction;
-import cn.birdstudio.transaction.service.TransactionService;
+import cn.birdstudio.order.service.OrderService;
 import cn.birdstudio.user.domain.User;
-import cn.birdstudio.user.service.UserService;
 
 /**
  * @author Sam Zhang
  */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class })
+@EnableTransactionManagement
 public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	@Resource
-	private UserService userService;
-
-	@Resource
-	private TransactionService transactionService;
+	private OrderService orderService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -52,14 +49,12 @@ public class Application {
 
 	@PostConstruct
 	public void doSomething() {
-		User user = userService.getUser("Jenni");
-		logger.info(user.toString());
-		Transaction transaction = transactionService.getTransaction(1L);
-		if (transaction != null)
-			logger.info(transaction.toString());
-		else
-			logger.info("transaction is null");
-
+		User jenni = new User(1, "Jenni");
+		User emma = new User(2, "Emma");
+		int amount = 1;
+		orderService.sold(jenni.getId(), emma.getId(), 1);
+		logger.info("Jenni sold " + amount + " book/books");
+		logger.info("Jenni bounght " + amount + " book/books");
 	}
 
 }
