@@ -1,5 +1,7 @@
 package cn.birdstudio.user.service;
 
+import java.util.Map;
+
 import cn.birdstudio.user.domain.User;
 
 public interface UserService {
@@ -7,5 +9,5 @@ public interface UserService {
 
 	User getUser(String name);
 
-	void sold(int seller_id, int buyer_id, int amount);
+	void receiveQueue(Map<String, Object> msg);
 }

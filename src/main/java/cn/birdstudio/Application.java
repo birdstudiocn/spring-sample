@@ -53,13 +53,8 @@ public class Application {
 	}
 
 	@Bean
-	public Queue sellerQueue() {
-		return new ActiveMQQueue("seller");
-	}
-
-	@Bean
-	public Queue buyerQueue() {
-		return new ActiveMQQueue("buyer");
+	public Queue queue() {
+		return new ActiveMQQueue("transaction");
 	}
 
 	@PostConstruct

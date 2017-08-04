@@ -1,5 +1,7 @@
 package cn.birdstudio.transaction.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -11,8 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.birdstudio.Application;
-import cn.birdstudio.jms.Message;
 import cn.birdstudio.jms.Producer;
+import cn.birdstudio.jms.Type;
 import cn.birdstudio.transaction.domain.Transaction;
 import cn.birdstudio.transaction.domain.TransactionRepository;
 
@@ -25,11 +27,8 @@ public class TransactionServiceImpl implements TransactionService {
 	@Resource
 	private Producer producer;
 
-	@Resource(name = "sellerQueue")
-	private Queue sellerQueue;
-
-	@Resource(name = "buyerQueue")
-	private Queue buyerQueue;
+	@Resource
+	private Queue queue;
 
 	public TransactionServiceImpl(TransactionRepository transactionRepository) {
 		this.transactionRepository = transactionRepository;
@@ -53,10 +52,16 @@ public class TransactionServiceImpl implements TransactionService {
 		transaction.setAmount(amount);
 		transactionRepository.save(transaction);
 		logger.info("Add transaction records");
-		Message sellerMsg = new Message(seller_id, amount);
-		producer.send(sellerQueue, sellerMsg);
-		Message buyerMsg = new Message(buyer_id, amount);
-		producer.send(buyerQueue, buyerMsg);
+		Map<String, Object> sellerMsg = new HashMap<>();
+		sellerMsg.put("id", seller_id);
+		sellerMsg.put("amount", amount);
+		sellerMsg.put("type", Type.SELLER.toString());
+		producer.send(queue, sellerMsg);
+		Map<String, Object> buyerMsg = new HashMap<>();
+		buyerMsg.put("id", buyer_id);
+		buyerMsg.put("amount", amount);
+		buyerMsg.put("type", Type.BUYER.toString());
+		producer.send(queue, buyerMsg);
 		logger.info("Send transaction queue");
 	}
 }

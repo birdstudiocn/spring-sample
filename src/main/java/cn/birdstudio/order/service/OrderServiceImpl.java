@@ -22,6 +22,5 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void sold(int seller_id, int buyer_id, int amount) {
 		transactionService.sold(seller_id, buyer_id, amount);
-		userService.sold(seller_id, buyer_id, amount);
 	}
 }
