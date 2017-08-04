@@ -18,7 +18,9 @@ package cn.birdstudio;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.jms.Queue;
 
+import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +28,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import cn.birdstudio.order.service.OrderService;
@@ -37,6 +41,7 @@ import cn.birdstudio.user.domain.User;
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class })
 @EnableTransactionManagement
+@EnableJms
 public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -45,6 +50,16 @@ public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+	}
+
+	@Bean
+	public Queue sellerQueue() {
+		return new ActiveMQQueue("seller");
+	}
+
+	@Bean
+	public Queue buyerQueue() {
+		return new ActiveMQQueue("buyer");
 	}
 
 	@PostConstruct
