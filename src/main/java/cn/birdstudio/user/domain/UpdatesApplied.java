@@ -1,12 +1,14 @@
-package cn.birdstudio.transaction.domain;
+package cn.birdstudio.user.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Table(name = "updates_applied", schema = "transaction")
 @Entity
 public class UpdatesApplied {
+	@Id
 	@Column(nullable = false)
 	private int trans_id;
 

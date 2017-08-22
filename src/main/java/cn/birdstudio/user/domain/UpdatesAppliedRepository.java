@@ -1,4 +1,4 @@
-package cn.birdstudio.transaction.domain;
+package cn.birdstudio.user.domain;
 
 import org.springframework.data.repository.CrudRepository;
 
