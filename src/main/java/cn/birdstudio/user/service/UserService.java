@@ -10,4 +10,6 @@ public interface UserService {
 	User getUser(String name);
 
 	void receiveQueue(Map<String, Object> msg);
+
+	void receivekafka(Map<String, Object> msg);
 }

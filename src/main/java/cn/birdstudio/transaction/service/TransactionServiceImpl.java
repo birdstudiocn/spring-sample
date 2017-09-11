@@ -56,12 +56,12 @@ public class TransactionServiceImpl implements TransactionService {
 		sellerMsg.put("id", seller_id);
 		sellerMsg.put("amount", amount);
 		sellerMsg.put("type", Type.SELLER.toString());
-		producer.send(queue, sellerMsg);
+		producer.sendKafkaMessage(sellerMsg);
 		Map<String, Object> buyerMsg = new HashMap<>();
 		buyerMsg.put("id", buyer_id);
 		buyerMsg.put("amount", amount);
 		buyerMsg.put("type", Type.BUYER.toString());
-		producer.send(queue, buyerMsg);
+		producer.sendKafkaMessage(buyerMsg);
 		logger.info("Send transaction queue");
 	}
 }

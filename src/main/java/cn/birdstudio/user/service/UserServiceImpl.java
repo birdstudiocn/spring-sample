@@ -2,7 +2,9 @@ package cn.birdstudio.user.service;
 
 import java.util.Map;
 
-import org.springframework.jms.annotation.JmsListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import cn.birdstudio.user.domain.UserRepository;
 
 @Component("userService")
 public class UserServiceImpl implements UserService {
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private final UserRepository userRepository;
 
 	public UserServiceImpl(UserRepository userRepository) {
@@ -44,8 +47,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@JmsListener(destination = "transaction")
+	//@JmsListener(destination = "transaction")
 	public void receiveQueue(Map<String, Object> msg) {
+		sold(msg);
+	}
+
+	@Override
+	@KafkaListener(topics = "transaction")
+	public void receivekafka(Map<String, Object> msg) {
+		logger.info("receive kafka message {}" + msg);
 		sold(msg);
 	}
 }
