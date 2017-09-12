@@ -2,6 +2,7 @@ package cn.birdstudio.user.service;
 
 import java.util.Map;
 
+import cn.birdstudio.jms.TransactionMessage;
 import cn.birdstudio.user.domain.User;
 
 public interface UserService {
@@ -11,5 +12,5 @@ public interface UserService {
 
 	void receiveQueue(Map<String, Object> msg);
 
-	void receivekafka(Map<String, Object> msg);
+	void receivekafka(TransactionMessage msg);
 }

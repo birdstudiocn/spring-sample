@@ -14,22 +14,25 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import cn.birdstudio.jms.TransactionMessage;
+
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
 	@Bean
-	public KafkaListenerContainerFactory<?> kafkaJsonListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<String, Map<String, Object>> factory = new ConcurrentKafkaListenerContainerFactory<>();
+	public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, TransactionMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		//factory.setMessageConverter(new StringJsonMessageConverter());
-		factory.setConcurrency(3);
+		//factory.setConcurrency(3);
 		factory.getContainerProperties().setPollTimeout(3000);
 		return factory;
 	}
 
 	@Bean
-	public ConsumerFactory<String, Map<String, Object>> consumerFactory() {
-		return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+	public ConsumerFactory<String, TransactionMessage> consumerFactory() {
+		JsonDeserializer<TransactionMessage> jd = new JsonDeserializer<>(TransactionMessage.class);
+		return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), jd);
 	}
 
 	@Bean
@@ -42,7 +45,7 @@ public class KafkaConsumerConfig {
 		propsMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		propsMap.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
-		propsMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		propsMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 		return propsMap;
 	}
 }
