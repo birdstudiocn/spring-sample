@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class TransactionMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private int xid;
 	private int id;
 	private int amount;
 	private Type type;
@@ -32,10 +33,19 @@ public class TransactionMessage implements Serializable {
 		this.type = type;
 	}
 
+	public int getXid() {
+		return xid;
+	}
+
+	public void setXid(int xid) {
+		this.xid = xid;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("id:").append(id).append(",amount:").append(amount).append(",type:").append(type);
+		sb.append("xid:").append(xid).append(",id:").append(id).append(",amount:").append(amount).append(",type:")
+				.append(type);
 		return sb.toString();
 	}
 }

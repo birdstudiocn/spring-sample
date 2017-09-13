@@ -50,18 +50,20 @@ public class TransactionServiceImpl implements TransactionService {
 		transaction.setSeller_id(seller_id);
 		transaction.setBuyer_id(buyer_id);
 		transaction.setAmount(amount);
-		transactionRepository.save(transaction);
+		transaction = transactionRepository.save(transaction);
 		logger.info("Add transaction records");
 		Map<String, Object> sellerMsg = new HashMap<>();
+		sellerMsg.put("xid", transaction.getXid());
 		sellerMsg.put("id", seller_id);
 		sellerMsg.put("amount", amount);
 		sellerMsg.put("type", Type.SELLER.toString());
 		producer.sendKafkaMessage(sellerMsg);
 		Map<String, Object> buyerMsg = new HashMap<>();
+		buyerMsg.put("xid", transaction.getXid());
 		buyerMsg.put("id", buyer_id);
 		buyerMsg.put("amount", amount);
 		buyerMsg.put("type", Type.BUYER.toString());
 		producer.sendKafkaMessage(buyerMsg);
-		logger.info("Send transaction queue");
+		logger.info("Send transaction messages");
 	}
 }

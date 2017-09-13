@@ -5,10 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "updates_applied", schema = "transaction")
+@Table(name = "updates_applied", schema = "user")
 @Entity
 public class UpdatesApplied {
 	@Id
+	@Column(nullable = false)
+	private int id;
+
 	@Column(nullable = false)
 	private int trans_id;
 
@@ -40,5 +43,13 @@ public class UpdatesApplied {
 
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }
