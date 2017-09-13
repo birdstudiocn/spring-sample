@@ -16,6 +16,7 @@
 	
     <modules>
         <module>Message-Driven-Sample</module>
+        <module>spring-batch-sample</module>
     </modules>
 
 </project>
