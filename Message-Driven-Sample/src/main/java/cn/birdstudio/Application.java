@@ -16,13 +16,13 @@
 
 package cn.birdstudio;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -42,7 +42,7 @@ import cn.birdstudio.user.domain.User;
 		DataSourceTransactionManagerAutoConfiguration.class })
 @EnableTransactionManagement
 @EnableJms
-public class Application {
+public class Application implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	@Resource
@@ -57,14 +57,13 @@ public class Application {
 		return new ActiveMQQueue("transaction");
 	}
 
-	@PostConstruct
-	public void doSomething() {
+	@Override
+	public void run(String... args) throws Exception {
 		User jenni = new User(1, "Jenni");
 		User emma = new User(2, "Emma");
 		int amount = 1;
 		orderService.sold(jenni.getId(), emma.getId(), 1);
-		logger.info("Jenni sold " + amount + " book/books");
-		logger.info("Jenni bounght " + amount + " book/books");
+		logger.info("{} sold {} book(s)", jenni.getName(), amount);
+		logger.info("{} bounght {} book(s)", emma.getName(), amount);
 	}
-
 }
