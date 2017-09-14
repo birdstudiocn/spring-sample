@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByNameAllIgnoringCase(name);
 	}
 
-	@Transactional("userTransactionManager")
 	private void sold(TransactionMessage msg) {
 		Type type = msg.getType();
 		int id = msg.getId();
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService {
 				userRepository.updateAmtBought(id, amount);
 				break;
 			}
-			//throwException();
+			throwException();
 			UpdatesApplied updatesApplied = new UpdatesApplied();
 			updatesApplied.setTrans_id(trans_id);
 			updatesApplied.setUser_id(id);
@@ -70,6 +69,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional("userTransactionManager")
 	@KafkaListener(groupId = "group1", topics = "transaction")
 	//@KafkaListener(groupId = "group1", topicPartitions = @TopicPartition(topic = "", partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "5")))
 	public void receivekafka(TransactionMessage msg) {
