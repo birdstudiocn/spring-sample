@@ -16,7 +16,10 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaProducerConfig {
 	@Bean
 	public ProducerFactory<String, Map<String, Object>> producerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
+		DefaultKafkaProducerFactory<String, Map<String, Object>> producerFactory = new DefaultKafkaProducerFactory<>(
+				producerConfigs());
+		producerFactory.setTransactionIdPrefix("trans");
+		return producerFactory;
 	}
 
 	@Bean

@@ -12,7 +12,9 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 import cn.birdstudio.jms.TransactionMessage;
 
@@ -20,12 +22,14 @@ import cn.birdstudio.jms.TransactionMessage;
 @EnableKafka
 public class KafkaConsumerConfig {
 	@Bean
-	public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory() {
+	public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory(
+			ProducerFactory<String, Map<String, Object>> producerFactory) {
 		ConcurrentKafkaListenerContainerFactory<String, TransactionMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		//factory.setMessageConverter(new StringJsonMessageConverter());
 		//factory.setConcurrency(3);
 		factory.getContainerProperties().setPollTimeout(3000);
+		factory.getContainerProperties().setTransactionManager(new KafkaTransactionManager<>(producerFactory));
 		return factory;
 	}
 
