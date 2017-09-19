@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService {
 				userRepository.updateAmtBought(id, amount);
 				break;
 			}
-			throwException();
 			UpdatesApplied updatesApplied = new UpdatesApplied();
 			updatesApplied.setTrans_id(trans_id);
 			updatesApplied.setUser_id(id);
@@ -75,10 +74,5 @@ public class UserServiceImpl implements UserService {
 	public void receivekafka(TransactionMessage msg) {
 		logger.info("receive kafka message {}", msg);
 		sold(msg);
-		//remove message from kafka
-	}
-
-	private void throwException() {
-		throw new RuntimeException("throw exception in test");
 	}
 }
