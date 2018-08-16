@@ -42,19 +42,20 @@ public class UserServiceImpl implements UserService {
 		Type type = msg.getType();
 		int id = msg.getId();
 		int amount = msg.getAmount();
-		int trans_id = msg.getXid();
-		int processed = updatesAppliedRepository.find(trans_id, id, type.toString());
+		int transId = msg.getXid();
+		int processed = updatesAppliedRepository.find(transId, id, type.toString());
 		if (processed == 0) {
 			switch (type) {
-			case SELLER:
-				userRepository.updateAmtSold(id, amount);
-				break;
-			case BUYER:
-				userRepository.updateAmtBought(id, amount);
-				break;
+				case SELLER:
+					userRepository.updateAmtSold(id, amount);
+					break;
+				case BUYER:
+					userRepository.updateAmtBought(id, amount);
+					break;
+				default:
 			}
 			UpdatesApplied updatesApplied = new UpdatesApplied();
-			updatesApplied.setTrans_id(trans_id);
+			updatesApplied.setTrans_id(transId);
 			updatesApplied.setUser_id(id);
 			updatesApplied.setBalance(type.toString());
 			updatesAppliedRepository.save(updatesApplied);
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	//@JmsListener(destination = "transaction")
 	public void receiveQueue(Map<String, Object> msg) {
+		logger.info("receive queue message {}", msg);
 		//sold(msg);
 	}
 

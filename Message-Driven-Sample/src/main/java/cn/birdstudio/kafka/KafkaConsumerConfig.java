@@ -26,8 +26,6 @@ public class KafkaConsumerConfig {
 			ProducerFactory<String, Map<String, Object>> producerFactory) {
 		ConcurrentKafkaListenerContainerFactory<String, TransactionMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
-		//factory.setMessageConverter(new StringJsonMessageConverter());
-		//factory.setConcurrency(3);
 		factory.getContainerProperties().setPollTimeout(3000);
 		factory.getContainerProperties().setTransactionManager(new KafkaTransactionManager<>(producerFactory));
 		return factory;

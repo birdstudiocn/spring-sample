@@ -21,12 +21,12 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.batch.item.file.transform.AbstractLineTokenizer;
 
 import cn.birdstudio.domain.User;
 
@@ -39,12 +39,6 @@ import cn.birdstudio.domain.User;
 @EnableBatchProcessing
 @EnableAutoConfiguration
 public class BatchConfiguration {
-	@Autowired
-	private JobBuilderFactory jobs;
-
-	@Autowired
-	private StepBuilderFactory steps;
-
 	private static final Logger logger = LoggerFactory.getLogger(BatchConfiguration.class);
 
 	/**
@@ -59,20 +53,14 @@ public class BatchConfiguration {
 		ClassPathResource pathResource = new ClassPathResource("user.txt");
 		FlatFileItemReader<User> reader = new FlatFileItemReader<>();
 		reader.setResource(pathResource);
-		reader.setLineMapper(new DefaultLineMapper<User>() {
-			{
-				setLineTokenizer(new DelimitedLineTokenizer("|") {
-					{
-						setNames(new String[] { "name", "gender" });
-					}
-				});
-				setFieldSetMapper(new BeanWrapperFieldSetMapper<User>() {
-					{
-						setTargetType(User.class);
-					}
-				});
-			}
-		});
+		AbstractLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer("|");
+		delimitedLineTokenizer.setNames(new String[]{"name", "gender"});
+		BeanWrapperFieldSetMapper<User> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper();
+		beanWrapperFieldSetMapper.setTargetType(User.class);
+		DefaultLineMapper<User> lineMapper = new DefaultLineMapper();
+		lineMapper.setLineTokenizer(delimitedLineTokenizer);
+		lineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
+		reader.setLineMapper(lineMapper);
 		reader.open(new ExecutionContext());
 		return reader;
 	}
@@ -104,12 +92,13 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Job importJob(@Qualifier("step1") Step s1, JobExecutionListener listener) {
+	public Job importJob(JobBuilderFactory jobs, @Qualifier("step1") Step s1, JobExecutionListener listener) {
 		return jobs.get("importJob").incrementer(new RunIdIncrementer()).listener(listener).flow(s1).end().build();
 	}
 
 	@Bean
-	public Step step1(@Qualifier("reader1") ItemReader<User> reader, @Qualifier("writer1") ItemWriter<User> writer,
+	public Step step1(StepBuilderFactory steps, @Qualifier("reader1") ItemReader<User> reader,
+			@Qualifier("writer1") ItemWriter<User> writer,
 			@Qualifier("processor1") ItemProcessor<User, User> processor, JobExecutionListener listener) {
 		return steps.get("step1").<User, User>chunk(10).reader(reader).processor(processor).writer(writer).build();
 
